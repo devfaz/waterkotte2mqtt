@@ -5,21 +5,22 @@ import logging
 import re
 import paho.mqtt.client as mqtt
 import time
+import os
 from pprint import pprint, pformat
 from math import floor
 
 
-hostname = os.env.get('WK_HOSTNAME')
-username = os.env.get('WK_USERNAME')
-password = os.env.get('WK_PASSWORD')
-mqtt_username = os.env.get('MQTT_USERNAME')
-mqtt_password = os.env.get('MQTT_PASSWORD')
-mqtt_host = os.env.get('MQTT_HOST')
+hostname = os.environ.get('WK_HOSTNAME')
+username = os.environ.get('WK_USERNAME')
+password = os.environ.get('WK_PASSWORD')
+mqtt_username = os.environ.get('MQTT_USERNAME')
+mqtt_password = os.environ.get('MQTT_PASSWORD')
+mqtt_host = os.environ.get('MQTT_HOST')
 url = 'http://' + hostname
 
 client = mqtt.Client()
 client.username_pw_set(mqtt_username, password=mqtt_password)
-client.connect("mqtt.rfc2324.de", 1883, 60)
+client.connect(mqtt_host, 1883, 60)
 client.loop_start()
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
