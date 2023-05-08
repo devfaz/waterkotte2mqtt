@@ -186,7 +186,7 @@ while True:
 
           if metric not in cache or cache[metric] != value:
             logging.info("Sending %s = %s to MQTT" % (metric, value))
-            client.publish("rest-to-mqtt/%s/%s" % (hostname, metric), value)
+            client.publish("rest-to-mqtt/%s/%s" % (hostname, metric), payload=value, retain=True)
             cache[metric] = value
           else:
             logging.info("Already transfered %s = %s" % (metric, value))
