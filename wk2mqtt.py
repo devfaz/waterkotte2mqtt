@@ -106,9 +106,12 @@ def is_set(x, n):
     return x & 2 ** n != 0 
 
 ValuesPerRequest = 15
-
+failc = 0
+max_failc = 10
 logging.info("Starting...")
 while True:
+    if failc > max_failc:
+        panic("failc reached")
     if 'cookies' not in cache:
         try:
             r = requests.get(url + '/cgi/login?username=' + username + '&password=' + password)
@@ -116,6 +119,7 @@ while True:
             cache['cookies'] = r.cookies
         except Exception as e:
             logging.error("Login failed: %s" % e)
+            failc += 1
             cache = {}
             time.sleep(10)
             continue
@@ -126,7 +130,10 @@ while True:
     logging.debug("Doing %s runs" % runs)
     i = 0
     while i < runs:
-        logging.debug("Run %s" % i)
+        if failc > max_failc:
+            panic("failc reached")
+        logging.debug("Run %s, failc %s" %(i, failc))
+
         metrics = tag_map_keys[i * ValuesPerRequest : (i+1)*ValuesPerRequest]
 
         params = ''
@@ -142,6 +149,7 @@ while True:
             logging.debug("Got anwer: %s" % r.text)
         except Exception as e:
             logging.warning("Request failed: %s" % e)
+            failc += 1
             # reset cookies
             cache = {}
             time.sleep(10)
@@ -192,6 +200,7 @@ while True:
             logging.info("Already transfered %s = %s" % (metric, value))
             
     logging.info("Sleeping...")
+    failc = 0
     time.sleep(60)
 
 
