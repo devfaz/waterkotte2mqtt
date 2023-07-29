@@ -1,3 +1,7 @@
+# Archived
+
+I personally switched to https://github.com/pattisonmichael/waterkotte-integration, so I no longer develop this code.
+
 # Example Deployment
 
 ```
